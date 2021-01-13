@@ -17,5 +17,3 @@ RUN pip3 install -r requirements.txt
 RUN echo "Building python grpc with $(nproc) jobs in 15 seconds" && sleep 5 && echo "======================"
 RUN python3 setup.py build -j$(nproc) 
 RUN python3 setup.py install
-
-RUN pip3 install grpcio-tools
