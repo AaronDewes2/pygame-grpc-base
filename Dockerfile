@@ -4,7 +4,7 @@ WORKDIR /
 
 RUN apt-get update
 # pygame build deps
-RUN apt-get install -y libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev libfreetype6-dev libjpeg-dev libportmidi-dev
+RUN apt-get install -y libsdl2-dev libsdl2-mixer-dev libsdl2-image-dev libsdl2-ttf-dev libfreetype6-dev libjpeg-dev libportmidi-dev git
 
 RUN pip3 install pypng pygame pyqrcode python-bitcoinrpc googleapis-common-protos
 
