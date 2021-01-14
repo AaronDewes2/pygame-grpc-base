@@ -14,4 +14,7 @@ RUN apt-get install -y git gcc g++ make  && \
   python3 setup.py install && \
   apt-get remove -y git gcc g++ make -y && \
   apt-get autoremove -y && \
-  apt-get clean
+  apt-get clean && \
+  cd .. && rm -rf grpc
+
+CMD ["python3", "--version"]
