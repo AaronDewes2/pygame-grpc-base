@@ -17,6 +17,9 @@ jobs:
       matrix:
         platform:
           - linux/arm64
+          - linux/arm/v7
+          - linux/amd64
+          - linux/386
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
@@ -49,5 +52,5 @@ jobs:
                 --cache-from "type=local,src=/tmp/.buildx-cache" \
                 --cache-to "type=local,dest=/tmp/.buildx-cache" \
                 --platform ${{matrix.platform}} \
-                --tag aarondewes/pygame-grpc-base:$BRANCH \
+                --tag aarondewes/python-grpc:$BRANCH \
                 --output "type=registry" ./
