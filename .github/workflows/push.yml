@@ -50,6 +50,6 @@ jobs:
                 --cache-from "type=local,src=/tmp/.buildx-cache" \
                 --cache-to "type=local,dest=/tmp/.buildx-cache" \
                 --platform ${{matrix.platform}} \
-                --tag ${{ secrets.DOCKER_CONTAINER_USERNAME }}/python_grpc:$BRANCH \
+                --tag ${{ secrets.DOCKER_CONTAINER_USERNAME }}/python-grpc:$BRANCH \
                 --output "type=registry" ./
 
