@@ -10,55 +10,66 @@ on:
                   - v[0-9]+.[0-9]+.[0-9]+-*
 
 jobs:
-        build:
-                runs-on: ubuntu-18.04
-                name: Build and push manager image
-                steps:
-                        - name: Set env variables
-                          run: echo "TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
-                        - name: Show set environment variables
-                          run: |
-                                  printf "    TAG: %s\n"  "$TAG"
-                             
-                        - name: Login to Docker for building
-                          run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+  build:
+    name: Build image
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/arm64
+          - linux/arm/v7
+          - linux/amd64
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
 
-                        - name: Checkout project
-                          uses: actions/checkout@v2
+      - name: Set env variables
+        run: echo "TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
-                        - name: Set up QEMU
-                          uses: docker/setup-qemu-action@v1
-                          id: qemu
+      - name: Show set environment variables
+        run: |
+          printf "    TAG: %s\n"  "$TAG"
 
-                        - name: Setup Docker buildx action
-                          uses: docker/setup-buildx-action@v1
-                          id: buildx
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-                        - name: Available platforms
-                          run: echo ${{ steps.buildx.outputs.platforms }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        id: qemu
 
-                        - name: Cache Docker layers
-                          uses: actions/cache@v2
-                          id: cache
-                          with:
-                            path: /tmp/.buildx-cache
-                            key: ${{ runner.os }}-buildx-${{ github.sha }}
-                            restore-keys: |
-                              ${{ runner.os }}-buildx-
-                        - name: Run Docker buildx against tag
-                          run: |
-                                  docker buildx build \
-                                  --cache-from "type=local,src=/tmp/.buildx-cache" \
-                                  --cache-to "type=local,dest=/tmp/.buildx-cache" \
-                                  --platform linux/amd64,linux/arm64,linux/arm/v7 \
-                                  --tag ${{ secrets.DOCKER_HUB_USER }}/manager:$TAG \
-                                  --output "type=registry" ./
-                        - name: Run Docker buildx against latest
-                          run: |
-                                  docker buildx build \
-                                  --cache-from "type=local,src=/tmp/.buildx-cache" \
-                                  --cache-to "type=local,dest=/tmp/.buildx-cache" \
-                                  --platform linux/amd64,linux/arm64,linux/arm/v7 \
-                                  --tag ${{ secrets.DOCKER_HUB_USER }}/manager:latest \
-                                  --output "type=registry" ./
+      - name: Setup Docker buildx action
+        uses: docker/setup-buildx-action@v1
+        id: buildx
+
+      - name: Show available Docker buildx platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        id: cache
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+              ${{ runner.os }}-buildx-
+      - name: Run Docker buildx against tag
+        run: |
+                  docker buildx build \
+                  --cache-from "type=local,src=/tmp/.buildx-cache" \
+                  --cache-to "type=local,dest=/tmp/.buildx-cache" \
+                  --platform ${{matrix.platform}} \
+                  --tag ${{ secrets.DOCKER_HUB_USER }}/python-grpc:$TAG \
+                  --output "type=registry" ./
+      - name: Run Docker buildx against latest
+        run: |
+                  docker buildx build \
+                  --cache-from "type=local,src=/tmp/.buildx-cache" \
+                  --cache-to "type=local,dest=/tmp/.buildx-cache" \
+                  --platform ${{matrix.platform}} \
+                  --tag ${{ secrets.DOCKER_HUB_USER }}/python-grpc:latest \
+                  --output "type=registry" ./
