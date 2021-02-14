@@ -13,8 +13,8 @@ RUN apt-get install -y git gcc g++ make curl && \
   python3 setup.py build -j$(nproc) && \
   python3 setup.py install && \
   cd tools/distrib/python/grpcio_tools && \
-  python ../make_grpcio_tools.py && \
-  pip install . && \
+  python3 ../make_grpcio_tools.py && \
+  pip3 install . && \
   apt-get remove -y git gcc g++ make curl -y && \
   apt-get autoremove -y && \
   apt-get clean && \
