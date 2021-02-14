@@ -12,6 +12,9 @@ RUN apt-get install -y git gcc g++ make  && \
   pip3 install -r requirements.txt  && \
   python3 setup.py build -j$(nproc) && \
   python3 setup.py install && \
+  cd tools/distrib/python/grpcio_tools && \
+  python ../make_grpcio_tools.py && \
+  pip install . && \
   apt-get remove -y git gcc g++ make -y && \
   apt-get autoremove -y && \
   apt-get clean && \
