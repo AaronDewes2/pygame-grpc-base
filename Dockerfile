@@ -1,3 +1,5 @@
+ARG VERSION=v1.36.0-pre1
+
 FROM python:3.7-slim
 
 WORKDIR /
@@ -6,8 +8,10 @@ RUN apt-get update
 
 RUN pip3 install googleapis-common-protos
 
+ARG VERSION
+
 RUN apt-get install -y git gcc g++ make curl && \
-  git clone https://github.com/UmbrUI/grpc.git -b arm64 --depth=1 --recursive  && \
+  git clone https://github.com/grpc/grpc.git -b $VERSION --depth=1 --recursive  && \
   cd grpc && \
   pip3 install -r requirements.txt  && \
   python3 setup.py build -j$(nproc) && \
