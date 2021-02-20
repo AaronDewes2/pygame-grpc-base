@@ -7,4 +7,3 @@ this container is also optimized to be as small as possible. It is based on the 
 and because we optimized this image, unlike images with all build dependencies that are about 670MB in size,
 this only has a size of 60MB-70MB.
 
-This repository is also optimized to use a fork of grpc that uses arm64 assembler for boringSSL to make the image faster at runtime.
