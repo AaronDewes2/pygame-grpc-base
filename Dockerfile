@@ -11,14 +11,11 @@ RUN pip3 install googleapis-common-protos
 ARG VERSION
 
 RUN apt-get install -y git gcc g++ make curl && \
-  git clone https://github.com/grpc/grpc.git -b $VERSION --depth=1 --recursive  && \
+  git clone https://github.com/grpc/grpc.git -b $VERSION --depth=1 --recursive && \
   cd grpc && \
   pip3 install -r requirements.txt  && \
   python3 setup.py build -j$(nproc) && \
   python3 setup.py install && \
-  cd tools/distrib/python/grpcio_tools && \
-  python3 ../make_grpcio_tools.py && \
-  pip3 install . && \
   apt-get remove -y git gcc g++ make curl -y && \
   apt-get autoremove -y && \
   apt-get clean && \
