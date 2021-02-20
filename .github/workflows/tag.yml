@@ -63,13 +63,16 @@ jobs:
                   --cache-from "type=local,src=/tmp/.buildx-cache" \
                   --cache-to "type=local,dest=/tmp/.buildx-cache" \
                   --platform ${{matrix.platform}} \
+                  --build-arg VERSION=$TAG \
                   --tag ${{ secrets.DOCKER_CONTAINER_USERNAME }}/python-grpc:$TAG \
                   --output "type=registry" ./
+
       - name: Run Docker buildx against latest
         run: |
                   docker buildx build \
                   --cache-from "type=local,src=/tmp/.buildx-cache" \
                   --cache-to "type=local,dest=/tmp/.buildx-cache" \
                   --platform ${{matrix.platform}} \
+                  --build-arg VERSION=$TAG \
                   --tag ${{ secrets.DOCKER_CONTAINER_USERNAME }}/python-grpc:latest \
                   --output "type=registry" ./
