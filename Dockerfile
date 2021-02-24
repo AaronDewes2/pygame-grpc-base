@@ -1,4 +1,4 @@
-ARG VERSION=v1.36.0-pre1
+ARG VERSION=v1.36.0
 
 FROM python:3.7-slim
 
